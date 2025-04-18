@@ -1,29 +1,24 @@
 let model;
 
-async function loadModel() {
-  model = await tf.loadLayersModel("tfjs_model/model.json");
-  console.log("Model loaded");
-}
-loadModel();
+window.onload = async () => {
+  model = await tf.loadLayersModel('tfjs_model/model.json');
+  console.log("Model loaded!");
+};
 
-document.getElementById("file-input").addEventListener("change", async (e) => {
-  const file = e.target.files[0];
+document.getElementById("upload").onchange = async (event) => {
+  const file = event.target.files[0];
+  if (!file || !model) {
+    alert("Model not loaded yet or no file!");
+    return;
+  }
+
   const img = new Image();
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
+  img.src = URL.createObjectURL(file);
 
   img.onload = async () => {
-    ctx.drawImage(img, 0, 0, 28, 28);
-    const imageData = ctx.getImageData(0, 0, 28, 28);
-    let input = tf.browser
-      .fromPixels(imageData, 1)
-      .reshape([1, 28, 28, 1])
-      .div(255.0);
-
-    const prediction = model.predict(input);
-    const predClass = (await prediction.argMax(1).data())[0];
-    document.getElementById("result").innerText = `Prediction: ${predClass}`;
+    const tensor = preprocessImage(img); // Your preprocessing function
+    const prediction = model.predict(tensor);
+    const result = await prediction.data();
+    console.log(result);
   };
-
-  img.src = URL.createObjectURL(file);
-});
+};
