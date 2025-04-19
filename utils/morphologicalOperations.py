@@ -1,0 +1,4 @@
+# erotion
+# dilation
+# hysteresis thresholding
+
