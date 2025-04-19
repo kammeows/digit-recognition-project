@@ -2,7 +2,8 @@ let model;
 
 window.onload = async () => {
   document.getElementById("upload").disabled = true;
-  model = await tf.loadLayersModel('tfjs_model/model.json');
+  // model = await tf.loadLayersModel('tfjs_model/model.json');
+  model = await tf.loadLayersModel('https://kammeows.github.io/digit-recognition-project/tfjs_model/model.json');
   console.log("Model loaded!");
   document.getElementById("upload").disabled = false;
 };
