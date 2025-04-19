@@ -3,7 +3,7 @@ let model;
 window.onload = async () => {
   document.getElementById("upload").disabled = true;
   // model = await tf.loadLayersModel('tfjs_model/model.json');
-  model = await tf.loadLayersModel('https://github.com/kammeows/digit-recognition-project/blob/master/tfjs_model/model.json');
+  model = await tf.loadLayersModel('https://raw.githubusercontent.com/kammeows/digit-recognition-project/master/tfjs_model/model.json');
   console.log("Model loaded!");
   document.getElementById("upload").disabled = false;
 };
