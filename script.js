@@ -22,13 +22,21 @@ document.getElementById("upload").onchange = async (event) => {
   img.src = URL.createObjectURL(file);
 
   img.onload = async () => {
-    const tensor = preprocessImage(img);
-    if (!tensor) {
-      alert("Preprocessing failed!");
-      return;
-    }
+    const canvas = document.createElement('canvas');
+    canvas.width = 28;
+    canvas.height = 28;
+    const ctx = canvas.getContext('2d');
+
+    ctx.drawImage(img, 0, 0, 28, 28);
+
+    let tensor = tf.browser.fromPixels(canvas).toFloat();
+    tensor = tensor.div(tf.scalar(255));
+    tensor = tensor.expandDims(0);
+    tensor = tensor.mean(-1).expandDims(-1);
+
     const prediction = model.predict(tensor);
     const result = await prediction.data();
     console.log(result);
+    document.getElementById("result").textContent = `Prediction: ${result}`;
   };
 };
