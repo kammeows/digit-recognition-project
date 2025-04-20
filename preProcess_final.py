@@ -5,13 +5,10 @@ from tensorflow.keras.models import load_model
 # import tensorflow as tf
 # print(tf.__version__)
 
-# model = load_model('models/digit-recognition-model-2.keras')
+# model = load_model('models/digit-recognition-model.keras')
 model = load_model('models/digit-symbol-recognition.keras')
-# image = cv2.imread('images/without_noise/one_two.jpg', cv2.IMREAD_GRAYSCALE)
-image = cv2.imread('images/digits_symbols/fourplus6.jpg', cv2.IMREAD_GRAYSCALE)
+image = cv2.imread('images/fourplus6.jpg', cv2.IMREAD_GRAYSCALE)
 image = cv2.GaussianBlur(image, (5,5), 0) 
-# image = cv2.imread('images/with_noise/oneTwo2.jpg', cv2.IMREAD_GRAYSCALE)
-# image = cv2.resize(image, (500, 500), interpolation=cv2.INTER_CUBIC)
 
 def thresholdImage(img, Lh=100, Th=150):
     r,c = img.shape
@@ -39,7 +36,6 @@ and1 = cv2.bitwise_and(eroded,dilated)
 and2 = cv2.bitwise_and(closing,opening)
 and_image = cv2.bitwise_and(and1,and2)
 
-# masked_img = cv2.bitwise_and(image, image, mask=and_image)
 masked_img = cv2.bitwise_and(binary_img, binary_img, mask=dilated)
 
 contours, _ = cv2.findContours(masked_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -70,15 +66,6 @@ plt.show()
 # plt.axis('off')
 # plt.show()
 
-# plt.figure(figsize=(15, 5))
-# for i in range(5):
-#     plt.subplot(1, 5, i+1)
-#     plt.imshow(images[i], cmap='gray')
-#     plt.title(titles[i])
-#     plt.axis('off')
-# plt.tight_layout()
-# plt.show()
-
 def resize_and_center_digit(img, size=28, pad=4):
     h, w = img.shape
     if h > w:
@@ -101,25 +88,24 @@ def resize_and_center_digit(img, size=28, pad=4):
 
 digit_regions.sort(key=lambda tup: tup[0])
 num_digits = len(digit_regions)
-plt.figure(figsize=(num_digits * 2, 4))  # Wider based on how many digits
+plt.figure(figsize=(num_digits * 2, 4)) 
 
 for i, (x, digit_img) in enumerate(digit_regions):
-    # Preprocess
+    # preprocess
     processed_digit = resize_and_center_digit(digit_img)
     processed_digit = 255 - processed_digit
     processed_digit = processed_digit.reshape(1, 28, 28, 1).astype('float32') / 255.0
 
-    # Predict
+    # predict
     prediction = model.predict(processed_digit)
     predicted_class = np.argmax(prediction)
 
-    # Plot processed image
+    # plot
     plt.subplot(2, num_digits, i + 1)
     plt.imshow(processed_digit.squeeze(), cmap='gray')
     plt.title(f"Pred: {predicted_class}")
     plt.axis('off')
 
-    # Plot original cropped digit
     plt.subplot(2, num_digits, num_digits + i + 1)
     plt.imshow(digit_img, cmap='gray')
     plt.title("Original")
@@ -127,26 +113,3 @@ for i, (x, digit_img) in enumerate(digit_regions):
 
 plt.tight_layout()
 plt.show()
-
-
-# for i, (x, digit_img) in enumerate(digit_regions):
-#     # method 1:
-#     # prediction = model.predict(digit_img)
-#     # predicted_class = np.argmax(prediction)
-
-#     # method 2:
-#     # resized_digit = cv2.resize(digit_img, (28, 28), interpolation=cv2.INTER_AREA)
-#     # normalized_digit = resized_digit.astype("float32") / 255.0
-#     # input_digit = np.expand_dims(normalized_digit, axis=(0, -1))
-#     # prediction = model.predict(input_digit)
-#     # predicted_class = np.argmax(prediction)
-
-#     # method 3:
-#     processed_digit = resize_and_center_digit(digit_img)
-#     processed_digit = 255 - processed_digit
-    
-#     processed_digit = processed_digit.reshape(1, 28, 28, 1).astype('float32') / 255.0
-
-#     # Predict the digit
-#     prediction = model.predict(processed_digit)
-#     predicted_class = np.argmax(prediction)
