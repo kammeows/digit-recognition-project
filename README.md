@@ -33,14 +33,5 @@ With this model, I was able to accurately detect digits as shown below:
 After finalizing this model, I combined the MNIST dataset with the add and subtract images of the kaggle dataset, and this was the output:
 
 I'm still working on improving the accuracy of the new model.
-
-# About the files
-1. classifier.py:
-2. mnist.py:
-3. mnistTest.py:
-4. morphologicalExperiment.py:
-5. preProcess_final.py:
-6. preProcessing.py:
-7. tensorModel.py:
 8. digitRecognition.ipynb:
 9. index.html and script.js:
